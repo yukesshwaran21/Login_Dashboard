@@ -1,6 +1,8 @@
 const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/authMiddleware");
+const { getUser } = require("../controllers/authController");
 
 const router = express.Router();
 
@@ -34,6 +36,12 @@ router.get(
         );
 
     }
+);
+
+router.get(
+    "/user",
+    auth,
+    getUser
 );
 
 module.exports = router;
