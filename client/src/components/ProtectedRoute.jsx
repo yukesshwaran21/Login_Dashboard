@@ -4,9 +4,10 @@ function ProtectedRoute({ children }) {
 
     const [searchParams] = useSearchParams();
 
-    const token = searchParams.get("token");
+    const urlToken = searchParams.get("token");
+    const localToken = localStorage.getItem("token");
 
-    if (!token) {
+    if (!urlToken && !localToken) {
         return <Navigate to="/" replace />;
     }
 

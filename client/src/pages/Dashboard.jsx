@@ -1,40 +1,97 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 
 function Dashboard() {
 
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
-    const token = searchParams.get("token");
+    const urlToken = searchParams.get("token");
+
+    const token = urlToken || localStorage.getItem("token");
 
     const [user, setUser] = useState(null);
 
+    const styles = {
+
+        container: {
+            textAlign: "center",
+            marginTop: "50px"
+        },
+
+        image: {
+            width: "150px",
+            height: "150px",
+            borderRadius: "50%",
+            objectFit: "cover"
+        },
+
+        avatar: {
+            width: "150px",
+            height: "150px",
+            borderRadius: "50%",
+            backgroundColor: "#4285F4",
+            color: "#fff",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "60px",
+            fontWeight: "bold",
+            margin: "0 auto"
+        },
+
+        button: {
+            marginTop: "25px",
+            padding: "12px 25px",
+            fontSize: "16px",
+            cursor: "pointer"
+        }
+
+    };
+
+    const [imageError, setImageError] = useState(false);
+
     useEffect(() => {
 
-        if (!token) return;
+    if (urlToken) {
 
-        api.get("/auth/user", {
+        localStorage.setItem("token", urlToken);
 
-            headers: {
+        navigate("/dashboard", { replace: true });
 
-                Authorization: `Bearer ${token}`
+        return;
+    }
 
-            }
+    if (!token) {
 
-        })
-        .then(res => {
+        navigate("/");
 
-            setUser(res.data);
+        return;
+    }
 
-        })
-        .catch(err => {
+    api.get("/auth/user", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then((res) => {
+        setUser(res.data);
+    })
+    .catch(() => {
+        localStorage.removeItem("token");
+        navigate("/");
+    });
 
-            console.log(err);
+    }, [urlToken, token, navigate]);
 
-        });
+    const handleLogout = () => {
 
-    }, [token]);
+        localStorage.removeItem("token");
+
+        navigate("/", { replace: true });
+
+    };
 
     if (!user) {
 
@@ -48,15 +105,31 @@ function Dashboard() {
 
             <h1>Dashboard</h1>
 
-            <img
-                src={user.picture}
-                alt="profile"
-                style={styles.image}
-            />
+            {
+                user.picture && !imageError ? (
+                    <img
+                        src={user.picture}
+                        alt="Profile"
+                        style={styles.image}
+                        onError={() => setImageError(true)}
+                    />
+                ) : (
+                    <div style={styles.avatar}>
+                        {(user.name || user.email).charAt(0).toUpperCase()}
+                    </div>
+                )
+            }
 
             <h2>{user.name}</h2>
 
             <p>{user.email}</p>
+
+            <button
+                style={styles.button}
+                onClick={handleLogout}
+            >
+                Logout
+            </button>
 
         </div>
 
@@ -67,17 +140,20 @@ function Dashboard() {
 const styles = {
 
     container: {
-
         textAlign: "center",
-        marginTop: "60px"
-
+        marginTop: "50px"
     },
 
     image: {
-
         width: "150px",
         borderRadius: "50%"
+    },
 
+    button: {
+        marginTop: "25px",
+        padding: "12px 25px",
+        fontSize: "16px",
+        cursor: "pointer"
     }
 
 };
