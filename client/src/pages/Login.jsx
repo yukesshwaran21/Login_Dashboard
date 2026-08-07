@@ -10,7 +10,7 @@ function Login(){
 
     const handleLogin=()=>{
 
-        window.location.href="http://localhost:5000/auth/google";
+        window.location.href="https://google-login-dashboard-api.onrender.com/auth/google";
 
     };
 
