@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../services/api";
+import "../styles/Dashboard.css";
 
 function Dashboard() {
 
@@ -54,34 +55,34 @@ function Dashboard() {
 
     useEffect(() => {
 
-    if (urlToken) {
+        if (urlToken) {
 
-        localStorage.setItem("token", urlToken);
+            localStorage.setItem("token", urlToken);
 
-        navigate("/dashboard", { replace: true });
+            navigate("/dashboard", { replace: true });
 
-        return;
-    }
-
-    if (!token) {
-
-        navigate("/");
-
-        return;
-    }
-
-    api.get("/auth/user", {
-        headers: {
-            Authorization: `Bearer ${token}`
+            return;
         }
-    })
-    .then((res) => {
-        setUser(res.data);
-    })
-    .catch(() => {
-        localStorage.removeItem("token");
-        navigate("/");
-    });
+
+        if (!token) {
+
+            navigate("/");
+
+            return;
+        }
+
+        api.get("/auth/user", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then((res) => {
+                setUser(res.data);
+            })
+            .catch(() => {
+                localStorage.removeItem("token");
+                navigate("/");
+            });
 
     }, [urlToken, token, navigate]);
 
@@ -101,61 +102,77 @@ function Dashboard() {
 
     return (
 
-        <div style={styles.container}>
+        <div className="dashboard">
 
-            <h1>Dashboard</h1>
+            {/* Navbar */}
 
-            {
-                user.picture && !imageError ? (
-                    <img
-                        src={user.picture}
-                        alt="Profile"
-                        style={styles.image}
-                        onError={() => setImageError(true)}
-                    />
-                ) : (
-                    <div style={styles.avatar}>
-                        {(user.name || user.email).charAt(0).toUpperCase()}
-                    </div>
-                )
-            }
+            <nav className="navbar">
 
-            <h2>{user.name}</h2>
+                <h2 className="dashboard-title">
+                    Dashboard
+                </h2>
 
-            <p>{user.email}</p>
+                <button
+                    className="logout-btn"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </button>
 
-            <button
-                style={styles.button}
-                onClick={handleLogout}
-            >
-                Logout
-            </button>
+            </nav>
+
+            {/* Profile Section */}
+
+            <div className="dashboard-body">
+
+                <div className="card">
+
+                    {
+                        user.picture && !imageError ?
+
+                            <img
+                                src={user.picture}
+                                className="profile"
+                                alt="Profile"
+                                onError={() => setImageError(true)}
+                            />
+
+                            :
+
+                            <div className="avatar">
+                                {(user.name || user.email)
+                                    .charAt(0)
+                                    .toUpperCase()}
+                            </div>
+
+                    }
+
+                    <div className="details">
+
+    <div className="name">
+        {user.name}
+    </div>
+
+    <hr className="divider" />
+
+    <div className="info">
+
+        <p>
+            <strong>Email : </strong>
+            {user.email}
+        </p>
+
+    </div>
+
+</div>
+
+                </div>
+
+            </div>
 
         </div>
 
     );
-
 }
-
-const styles = {
-
-    container: {
-        textAlign: "center",
-        marginTop: "50px"
-    },
-
-    image: {
-        width: "150px",
-        borderRadius: "50%"
-    },
-
-    button: {
-        marginTop: "25px",
-        padding: "12px 25px",
-        fontSize: "16px",
-        cursor: "pointer"
-    }
-
-};
 
 export default Dashboard;

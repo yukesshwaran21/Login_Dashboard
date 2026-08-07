@@ -1,54 +1,52 @@
 import { Navigate } from "react-router-dom";
+import "../styles/Login.css";
+import logo from "../assets/logo.jpg";
 
-function Login() {
+function Login(){
 
-    if (localStorage.getItem("token")) {
-
+    if(localStorage.getItem("token")){
         return <Navigate to="/dashboard" replace />;
-
     }
 
-    const handleLogin = () => {
+    const handleLogin=()=>{
 
-        window.location.href = "http://localhost:5000/auth/google";
+        window.location.href="http://localhost:5000/auth/google";
 
     };
 
-    return (
+    return(
 
-        <div style={styles.container}>
+        <div className="login-container">
 
-            <h1>Google Login Dashboard</h1>
+            <div className="login-card">
 
-            <button
-                style={styles.button}
-                onClick={handleLogin}
-            >
-                Sign in with Google
-            </button>
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="login-logo"
+                />
+
+                <h2 className="login-title">
+                    😊 𝙇𝙚𝙩'𝙨 𝙜𝙚𝙩 𝙎𝙩𝙖𝙧𝙩𝙚𝙙
+                </h2>
+
+                <p className="login-text">
+                    Sign in securely using your Google Account
+                </p>
+
+                <button
+                    className="google-btn"
+                    onClick={handleLogin}
+                >
+                    Continue with Google
+                </button>
+
+            </div>
 
         </div>
 
     );
 
 }
-
-const styles = {
-
-    container: {
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column"
-    },
-
-    button: {
-        padding: "12px 25px",
-        fontSize: "18px",
-        cursor: "pointer"
-    }
-
-};
 
 export default Login;
