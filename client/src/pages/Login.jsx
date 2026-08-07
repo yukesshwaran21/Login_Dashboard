@@ -10,7 +10,7 @@ function Login(){
 
     const handleLogin=()=>{
 
-        window.location.href="https://google-login-dashboard-api.onrender.com/auth/google";
+        window.location.href =`${import.meta.env.VITE_API_URL}/auth/google`;
 
     };
 
