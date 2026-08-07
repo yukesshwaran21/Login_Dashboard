@@ -121,7 +121,6 @@ function Dashboard() {
 
             </nav>
 
-            {/* Profile Section */}
 
             <div className="dashboard-body">
 
