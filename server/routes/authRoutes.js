@@ -33,7 +33,7 @@ router.get(
         );
 
         res.redirect(
-            `http://localhost:5173/dashboard?token=${token}`
+            `${process.env.CLIENT_URL}/dashboard?token=${token}`
         );
 
     }
@@ -59,7 +59,7 @@ router.get("/logout", (req, res) => {
 
         req.session.destroy(() => {
 
-            res.redirect("http://localhost:5173");
+            res.redirect(process.env.CLIENT_URL);
 
         });
 
